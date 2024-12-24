@@ -3,7 +3,6 @@
 #include <fcntl.h>
 #include <i2c/smbus.h>
 #include <linux/i2c-dev.h>
-#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
@@ -25,10 +24,9 @@
  * right. and so on...
  */
 int convertBits(int input, int positions[]) {
-  int len = floor(log2(input)) + 1;
   int output = 0;
 
-  for (int i = 0; i < len; i++) {
+  for (int i = 0; i < 7; i++) {
     int bit = (input & (1 << i)) >> i;
     int shift = positions[i];
     output |= bit << shift;
