@@ -53,9 +53,9 @@ int make_cmd(LetsScreenI2C *lcd, int cmd, bool enable) {
   if (errno < 0)                                                               \
     return errno;
 
-int LetsScreenI2CInit(LetsScreenI2C *lcd, char *devicefile, int adress,
-                      bool backlight, bool blink, bool cursor, int lines,
-                      bool font5x10, int pinmapping[]) {
+int setupLcd(LetsScreenI2C *lcd, char *devicefile, int adress, bool backlight,
+             bool blink, bool cursor, int lines, bool font5x10,
+             int pinmapping[]) {
   lcd->address = adress;
   lcd->backlight = backlight;
   lcd->blink = blink;
@@ -116,6 +116,24 @@ int LetsScreenI2CInit(LetsScreenI2C *lcd, char *devicefile, int adress,
   send_cmd(0);
   usleep(50);
   send_cmd(0b110);
+  usleep(50);
+
+  return 0;
+}
+
+int reconfigureLcd(LetsScreenI2C *lcd, bool backlight, bool blink,
+                   bool cursor) {
+  lcd->backlight = backlight;
+
+  int errno = 0;
+  send_cmd(0);
+  usleep(50);
+  int byte = 0b1100; // Display is always on
+  if (blink)
+    byte |= 0b1;
+  if (cursor)
+    byte |= 0b10;
+  send_cmd(byte);
   usleep(50);
 
   return 0;

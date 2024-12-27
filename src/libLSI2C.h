@@ -12,9 +12,10 @@ typedef struct LetsScreenI2C {
   int *pinmapping;
 } LetsScreenI2C;
 
-int LetsScreenI2CInit(LetsScreenI2C *lcd, char *devicefile, int adress,
-                      bool backlight, bool blink, bool cursor, int lines,
-                      bool font5x10, int pinmapping[]);
+int setupLcd(LetsScreenI2C *lcd, char *devicefile, int adress, bool backlight,
+             bool blink, bool cursor, int lines, bool font5x10,
+             int pinmapping[]);
 int closeLcd(LetsScreenI2C *lcd);
+int reconfigureLcd(LetsScreenI2C *lcd, bool backlight, bool blink, bool cursor);
 
 #endif
