@@ -1,6 +1,6 @@
 #include "../src/libLSI2C.h"
 
-LetsScreenLCD lcd;
+LetsScreenI2C lcd;
 
 int main() {
 

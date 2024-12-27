@@ -36,7 +36,7 @@ int convertBits(int input, int positions[]) {
   return output;
 }
 
-int make_cmd(LetsScreenLCD *lcd, int cmd, bool enable) {
+int make_cmd(LetsScreenI2C *lcd, int cmd, bool enable) {
   if (lcd->backlight)
     cmd |= 0b01000000;
   if (enable)
@@ -53,7 +53,7 @@ int make_cmd(LetsScreenLCD *lcd, int cmd, bool enable) {
   if (errno < 0)                                                               \
     return errno;
 
-int LetsScreenI2CInit(LetsScreenLCD *lcd, char *devicefile, int adress,
+int LetsScreenI2CInit(LetsScreenI2C *lcd, char *devicefile, int adress,
                       bool backlight, bool blink, bool cursor, int lines,
                       bool font5x10, int pinmapping[]) {
   lcd->address = adress;
@@ -121,7 +121,7 @@ int LetsScreenI2CInit(LetsScreenLCD *lcd, char *devicefile, int adress,
   return 0;
 }
 
-int closeLcd(LetsScreenLCD *lcd) {
+int closeLcd(LetsScreenI2C *lcd) {
   if (close(lcd->file) < 0) {
     printf("Error closing device file\n");
     return -1;

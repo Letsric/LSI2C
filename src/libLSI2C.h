@@ -3,18 +3,18 @@
 
 #include <stdbool.h>
 
-typedef struct LetsScreenLCD {
+typedef struct LetsScreenI2C {
   int address;
   int file;
   bool backlight;
   bool blink;
   bool cursor;
   int *pinmapping;
-} LetsScreenLCD;
+} LetsScreenI2C;
 
-int LetsScreenI2CInit(LetsScreenLCD *lcd, char *devicefile, int adress,
+int LetsScreenI2CInit(LetsScreenI2C *lcd, char *devicefile, int adress,
                       bool backlight, bool blink, bool cursor, int lines,
                       bool font5x10, int pinmapping[]);
-int closeLcd(LetsScreenLCD *lcd);
+int closeLcd(LetsScreenI2C *lcd);
 
 #endif
