@@ -26,7 +26,7 @@
 int convertBits(int input, int positions[]) {
   int output = 0;
 
-  for (int i = 0; i < 7; i++) {
+  for (int i = 0; i < 8; i++) {
     int bit = (input & (1 << i)) >> i;
     int shift = positions[i];
     output |= bit << shift;
@@ -48,6 +48,7 @@ int make_cmd(LetsScreenLCD *lcd, int cmd, bool enable) {
   errno = i2c_smbus_write_byte(lcd->file, make_cmd(lcd, cmd, true));           \
   if (errno < 0)                                                               \
     return errno;                                                              \
+  usleep(50); /* This isn't needed but makes me feel better :) */              \
   errno = i2c_smbus_write_byte(lcd->file, make_cmd(lcd, cmd, false));          \
   if (errno < 0)                                                               \
     return errno;

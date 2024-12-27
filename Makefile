@@ -26,7 +26,7 @@ build/lib/libLSI2C.o: src/libLSI2C.c src/libLSI2C.h
 	$(CC) $(CFLAGS) -c -fPIC -o build/lib/libLSI2C.o src/libLSI2C.c
 build/lib/libLSI2C.so: build/lib/libLSI2C.o
 	$(dir_guard)
-	$(CC) $(CFLAGS) -shared -o build/lib/libLSI2C.so build/lib/libLSI2C.o -lm -li2c
+	$(CC) $(CFLAGS) -shared -o build/lib/libLSI2C.so build/lib/libLSI2C.o -li2c
 
 # EXAMPLE
 build/example/example: example/example.c build/lib/libLSI2C.so
