@@ -18,6 +18,11 @@ int main() {
 
   sleep(1);
 
+  printf("calling wirteText\n");
+  writeToLcd(&lcd, "Hello! ¥ \\ äöü █");
+
+  sleep(1);
+
   printf("calling reconfigureLcd\n");
   reconfigureLcd(&lcd, true, true, true);
 

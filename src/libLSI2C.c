@@ -140,6 +140,95 @@ int reconfigureLcd(LetsScreenI2C *lcd, bool backlight, bool blink,
   return 0;
 }
 
+#define write_char(c)                                                          \
+  send_cmd(0b100000 | c >> 4);                                                 \
+  usleep(50);                                                                  \
+  send_cmd(0b100000 | c & 0b1111);                                             \
+  usleep(50);
+
+int writeToLcd(LetsScreenI2C *lcd, char text[]) {
+  bool done = false;
+  int errno = 0;
+
+  for (int i = 0; !done; i++) {
+    uint8_t c = text[i];
+    if (c == 0) {
+      done = true;
+
+    } else if (c < 0b100000) {
+      printf(
+          "[LSI2C] WARNING: ASCII character Nr. %d not supported by display!\n",
+          c);
+
+    } else if (c < 0b10000000) { // Normal ASCII char
+      // The display ROM maps ASCII backslash (\) to Yen symbol.
+      // Let's map it to normal slash (/) instead.
+      if (c == 92)
+        c = 47;
+      write_char(c);
+
+    } else if (c < 0b11000000) { // UTF-8 continuation; must not happen
+      printf("[LSI2C] ERROR: unexpected UTF-8 continuation! This may be a bug "
+             "in LSI2C! Please open an issue: "
+             "https://github.com/Letsric/LSI2C/issues/new\n");
+      return -2;
+
+    } else if (c < 0b11100000) { // UTF-8 two bit encoding
+      uint16_t full = (c << 8) + (uint8_t)text[i + 1];
+      i += 1; // Skip next byte, already processed
+      switch (full) {
+      case 0b1100001010100101:
+        write_char(0b01011100); // Map ¥
+        break;
+      case 0b1100001110100100:
+        write_char(0b11100001); // Map ä
+        break;
+      case 0b1100001110110110:
+        write_char(0b11101111); // Map ö
+        break;
+      case 0b1100001110111100:
+        write_char(0b11110101); // Map ü
+        break;
+      default: // I'm too lazy to map all supported symbols, also, that would
+               // require a more sophisticated approach
+        printf(
+            "[LSI2C] WARNING: character may be printable to display, but LSI2C "
+            "doesn't support it. skipping.\n");
+      }
+
+    } else if (c < 0b11110000) { // UTF-8 three bit encoding
+      uint32_t full =
+          (c << 16) + ((uint8_t)text[i + 1] << 8) + (uint8_t)text[i + 2];
+      i += 2; // Skip next two bytes, already processed
+      switch (full) {
+      case 0b111000101001011010100001:
+        write_char(0b11011011);
+        break;
+      case 0b111000101001011010001000:
+        write_char(0b11111111);
+        break;
+      default: // I'm too lazy to map all supported symbols, also, that would
+               // require a more sophisticated approach
+        printf(
+            "[LSI2C] WARNING: character may be printable to display, but LSI2C "
+            "doesn't support it. skipping.\n");
+      }
+
+    } else if (c < 0b11111000) { // UTF-8 four bit encoding
+      printf(
+          "[LSI2C] WARNING: character may be printable to display, but LSI2C "
+          "doesn't support it. skipping.\n");
+      i += 3; // Skip next two bytes, already "processed"
+
+    } else {
+      printf("[LSI2C] ERROR: character to write has non UTF-8 encoding!\n");
+      return -2;
+    }
+  }
+
+  return errno;
+}
+
 int closeLcd(LetsScreenI2C *lcd) {
   if (close(lcd->file) < 0) {
     printf("Error closing device file\n");

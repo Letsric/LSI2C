@@ -17,5 +17,6 @@ int setupLcd(LetsScreenI2C *lcd, char *devicefile, int adress, bool backlight,
              int pinmapping[]);
 int closeLcd(LetsScreenI2C *lcd);
 int reconfigureLcd(LetsScreenI2C *lcd, bool backlight, bool blink, bool cursor);
+int writeToLcd(LetsScreenI2C *lcd, char text[]);
 
 #endif
