@@ -4,6 +4,7 @@
 #include <i2c/smbus.h>
 #include <linux/i2c-dev.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -118,7 +119,7 @@ int setupLcd(LetsScreenI2C *lcd, char *devicefile, int adress, bool backlight,
   send_cmd(0b110);
   usleep(50);
 
-  return 0;
+  return errno;
 }
 
 int reconfigureLcd(LetsScreenI2C *lcd, bool backlight, bool blink,
