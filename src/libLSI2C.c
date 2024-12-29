@@ -202,10 +202,10 @@ int writeToLcd(LetsScreenI2C *lcd, char text[]) {
       i += 2; // Skip next two bytes, already processed
       switch (full) {
       case 0b111000101001011010100001:
-        write_char(0b11011011);
+        write_char(0b11011011); // Map □
         break;
       case 0b111000101001011010001000:
-        write_char(0b11111111);
+        write_char(0b11111111); // Map █
         break;
       default: // I'm too lazy to map all supported symbols, also, that would
                // require a more sophisticated approach
