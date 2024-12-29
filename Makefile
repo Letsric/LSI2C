@@ -7,6 +7,9 @@ all: tools lib example
 clean:
 	rm -r build
 
+run: build/example/example
+	LD_LIBRARY_PATH=build/lib ./build/example/example
+
 
 tools: build/tools/backlightCtl
 
