@@ -14,7 +14,7 @@ int main() {
   // this is an example pin mapping, you need to know yours
 
   printf("calling setupLcd\n");
-  setupLcd(&lcd, "/dev/i2c-1", 0x27, false, false, false, 4, true,
+  setupLcd(&lcd, "/dev/i2c-1", 0x27, false, false, false, 4, 20, true,
            (int[]){4, 5, 6, 7, 1, 0, 3, 2});
 
   sleep(1);

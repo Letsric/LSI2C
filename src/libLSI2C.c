@@ -55,9 +55,11 @@ int make_cmd(LetsScreenI2C *lcd, int cmd, bool enable) {
     return errno;
 
 int setupLcd(LetsScreenI2C *lcd, char *devicefile, int adress, bool backlight,
-             bool blink, bool cursor, int lines, bool font5x10,
+             bool blink, bool cursor, int lines, int linelengh, bool font5x10,
              int pinmapping[]) {
   lcd->address = adress;
+  lcd->lines = lines;
+  lcd->linelen = linelengh;
   lcd->backlight = backlight;
   lcd->blink = blink;
   lcd->cursor = cursor;
@@ -137,6 +139,55 @@ int reconfigureLcd(LetsScreenI2C *lcd, bool backlight, bool blink,
   send_cmd(byte);
   usleep(50);
 
+  return errno;
+}
+
+int clearLcd(LetsScreenI2C *lcd) {
+  int errno = 0;
+  send_cmd(0);
+  usleep(50);
+  send_cmd(0b1);
+  usleep(20000);
+  return 0;
+}
+
+int moveLcdCursor(LetsScreenI2C *lcd, int x, int y) {
+  int errno = 0;
+  // See HD44780 datasheet page 29
+  // Adress is 0x0 to 0x4F for 1line display
+  // Adress is 0x0 to 0x27, then 0x40 to 0x67 for 2line display
+  // 4line display acts like 2line display, but lines are split:
+  // 1st line is 1st half of first line, 2nd line is 1st half of second line,
+  // 3rd line is 2nd hald to first line, 4th line is 2nd halt of second line
+  if (lcd->lines == 1) { // We can ignore y
+    send_cmd(0b1000 | (x >> 4));
+    usleep(50);
+    send_cmd(x & 0b1111);
+    usleep(50);
+  } else if (lcd->lines == 2) {
+    int addr = (lcd->linelen * y) + x;
+    // Bridge the gap from 0x27 to 0x40 (see comment above)
+    if (addr > 39)
+      addr += 24;
+    send_cmd(0b1000 | (addr >> 4));
+    usleep(50);
+    send_cmd(addr & 0b1111);
+    usleep(50);
+  } else if (lcd->lines == 4) {
+    // Translate 1 2 3 4 to 1 3 2 4 (see comment above)
+    if (y == 2)
+      y = 1;
+    else if (y == 1)
+      y = 2;
+    int addr = (lcd->linelen * y) + x;
+    // Bridge the gap from 0x27 to 0x40 (see comment above)
+    if (addr > 39)
+      addr += 24;
+    send_cmd(0b1000 | (addr >> 4));
+    usleep(50);
+    send_cmd(addr & 0b1111);
+    usleep(50);
+  }
   return errno;
 }
 
