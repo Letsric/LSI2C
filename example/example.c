@@ -29,12 +29,26 @@ int main() {
 
   sleep(1);
 
-  printf("demonstrating line break\n");
+  printf("demonstrating line wrapping\n");
   char text[] = "Testing....";
-  for (int i = 0; i < 124; i++) {
+  for (int i = 0; i < 125; i++) {
     writeToLcd(&lcd, (char[]){text[i % 11], 0});
     usleep(100000);
   }
+
+  sleep(1);
+
+  printf("You can use the '\\n' character to line break too!\n");
+  clearLcd(&lcd);
+  writeToLcd(&lcd, "Hello!\n"
+                   "Loading...\n"
+                   "[██████   ]");
+
+  sleep(1);
+
+  printf("Use moveLcdCursor to move to move the cursor\n");
+  moveLcdCursor(&lcd, 5, 0);
+  writeToLcd(&lcd, " World");
 
   sleep(1);
 

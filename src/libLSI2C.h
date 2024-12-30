@@ -11,6 +11,9 @@ typedef struct LetsScreenI2C {
   bool backlight;
   bool blink;
   bool cursor;
+  int cursorx; // Keep track of cursor pos for manual
+  int cursory; // line wrapping. See func writeToLcd for
+               // more info
   int *pinmapping;
 } LetsScreenI2C;
 

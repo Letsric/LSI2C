@@ -148,10 +148,22 @@ int clearLcd(LetsScreenI2C *lcd) {
   usleep(50);
   send_cmd(0b1);
   usleep(20000);
+  moveLcdCursor(lcd, 0, 0);
   return 0;
 }
 
 int moveLcdCursor(LetsScreenI2C *lcd, int x, int y) {
+  // Line wrapping
+  if (1 + x >= lcd->linelen) {
+    y += (1 + x) / lcd->linelen;
+    x = x % lcd->linelen;
+  }
+  if (1 + y >= lcd->lines)
+    y = y % lcd->lines;
+
+  lcd->cursorx = x;
+  lcd->cursory = y;
+
   int errno = 0;
   // See HD44780 datasheet page 29
   // Adress is 0x0 to 0x4F for 1line display
@@ -195,7 +207,11 @@ int moveLcdCursor(LetsScreenI2C *lcd, int x, int y) {
   send_cmd(0b100000 | c >> 4);                                                 \
   usleep(50);                                                                  \
   send_cmd(0b100000 | c & 0b1111);                                             \
-  usleep(50);
+  usleep(50);                                                                  \
+  lcd->cursorx++;                                                              \
+  if (lcd->cursorx == lcd->linelen) {                                          \
+    moveLcdCursor(lcd, 0, lcd->cursory + 1);                                   \
+  }
 
 int writeToLcd(LetsScreenI2C *lcd, char text[]) {
   bool done = false;
@@ -207,15 +223,18 @@ int writeToLcd(LetsScreenI2C *lcd, char text[]) {
       done = true;
 
     } else if (c < 0b100000) {
-      printf(
-          "[LSI2C] WARNING: ASCII character Nr. %d not supported by display!\n",
-          c);
+      if (c == '\n') { // Line break with '\n'
+        moveLcdCursor(lcd, 0, lcd->cursory + 1);
+      } else
+        printf("[LSI2C] WARNING: ASCII character Nr. %d not supported by "
+               "display!\n",
+               c);
 
     } else if (c < 0b10000000) { // Normal ASCII char
       // The display ROM maps ASCII backslash (\) to Yen symbol.
       // Let's map it to normal slash (/) instead.
-      if (c == 92)
-        c = 47;
+      if (c == '\\')
+        c = '/';
       write_char(c);
 
     } else if (c < 0b11000000) { // UTF-8 continuation; must not happen
