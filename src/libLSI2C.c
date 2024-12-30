@@ -137,7 +137,7 @@ int reconfigureLcd(LetsScreenI2C *lcd, bool backlight, bool blink,
   send_cmd(byte);
   usleep(50);
 
-  return 0;
+  return errno;
 }
 
 #define write_char(c)                                                          \
