@@ -204,9 +204,9 @@ int moveLcdCursor(LetsScreenI2C *lcd, int x, int y) {
 }
 
 #define write_char(c)                                                          \
-  send_cmd(0b100000 | c >> 4);                                                 \
+  send_cmd(0b100000 | (c >> 4));                                               \
   usleep(50);                                                                  \
-  send_cmd(0b100000 | c & 0b1111);                                             \
+  send_cmd(0b100000 | (c & 0b1111));                                           \
   usleep(50);                                                                  \
   lcd->cursorx++;                                                              \
   if (lcd->cursorx == lcd->linelen) {                                          \
