@@ -5,15 +5,15 @@ A C Library for Liquid Crystal screens with I²C Backpack for Linux
 
 Compatible with HD44780 screens and PCF574 based backpacks
 
-# Demo
+# Demo video
 
-WIP
+[![demo video](http://img.youtube.com/vi/vd55fGJ4qyo/0.jpg)](http://www.youtube.com/watch?v=vd55fGJ4qyo)
 
 # Usage
 
 ## Requirements
 
-- An LCD with I²C Backpack (like [this one](https://www.az-delivery.de/products/hd44780-2004-lcd-display-bundle-4x20-zeichen-mit-i2c-schnittstelle-gruen?_pos=5&_sid=8ff954a91&_ss=r))
+- An LCD with I²C Backpack (like [this one](https://www.az-delivery.de/products/hd44780-2004-lcd-display-bundle-4x20-zeichen-mit-i2c-schnittstelle-gruen?_pos=5&_sid=8ff954a91&_ss=r)) 1-Line and 2-Line displays *should* word, but **only a 4-Line display is tested and confirmed to word!** If you notice unintended behavior, please open an Issue on Github.
 - A I²C capable Linux device (make sure to enable I²C in `raspi-config` for Raspberry Pi)
 - build essentials (gcc, make, ...)
 - Linux headers
