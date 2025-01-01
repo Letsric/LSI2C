@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include "../src/libLSI2C.h"
+#include "LSI2C.h"
 
 LetsScreenI2C lcd;
 

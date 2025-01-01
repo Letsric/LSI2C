@@ -1,4 +1,4 @@
-#include "libLSI2C.h"
+#include "LSI2C.h"
 
 #include <fcntl.h>
 #include <i2c/smbus.h>

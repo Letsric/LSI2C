@@ -15,23 +15,26 @@ Compatible with HD44780 screens and PCF574 based backpacks
 
 - An LCD with I²C Backpack (like [this one](https://www.az-delivery.de/products/hd44780-2004-lcd-display-bundle-4x20-zeichen-mit-i2c-schnittstelle-gruen?_pos=5&_sid=8ff954a91&_ss=r)) 1-Line and 2-Line displays *should* word, but **only a 4-Line display is tested and confirmed to word!** If you notice unintended behavior, please open an Issue on Github.
 - A I²C capable Linux device (make sure to enable I²C in `raspi-config` for Raspberry Pi)
-- build essentials (gcc, make, ...)
+- build essentials (gcc, make, git, ...)
 - Linux headers
-- libi2c (for `i2c/smbus.h`)
-- i2c-tools (only needed for scanning) (In some distros, this also includes `i2c/smbus.h`)
+- i2c-tools (only needed for scanning)
 
 For Raspberry Pi OS:
 ```bash
-sudo apt install build-essential raspberrypi-kernel-headers libi2c-dev i2c-tools
+sudo apt install build-essential raspberrypi-kernel-headers i2c-tools
 ```
 
 ## Building
 
-simply run `make` to build everything.
+```bash
+git clone --recurse-submodules https://github.com/Letsric/LSI2C.git
+cd LSI2C
+make
+```
 
 ## Other make targets
 
-- **lib**: compile `libLSI2C.so`
+- **lib**: compile `libLSI2C.a`
 - **tools**: compile files in tools/ folder
 - **example**: compile example
 - **run**: compile and run example
